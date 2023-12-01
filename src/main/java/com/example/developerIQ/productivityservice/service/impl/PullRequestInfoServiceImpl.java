@@ -32,12 +32,6 @@ public class PullRequestInfoServiceImpl implements PullRequestInfoService {
     @Autowired
     private PullRequestRepository pullRequestRepository;
 
-//    @Autowired
-//    private CommitRepository commitRepository;
-//
-//    @Autowired
-//    private IssueRepository issueRepository;
-
     @Autowired
     private RestTemplate restTemplate;
 
@@ -148,69 +142,5 @@ public class PullRequestInfoServiceImpl implements PullRequestInfoService {
         // Calculate the percentage
         return (double) count / allPRCount * 100;
     }
-
-//    @Override
-//    public String savePullRequests() {
-//        try{
-//            // fetch PR details
-//            List<PullRequestEntity> pullRequestEntityList = githubService.fetchPullRequests();
-//            if(pullRequestEntityList == null || pullRequestEntityList.isEmpty()) {
-//                throw new NullPointerException("final PR Entity list is null and saving failed");
-//            }
-//            for(PullRequestEntity pr: pullRequestEntityList) {
-//                pullRequestRepository.save(pr);
-//            }
-//            return "Pull Requests Saved Successfully";
-//
-//        } catch(RuntimeException e){
-//            logger.error("pull requests save failed ", e);
-//            throw new RuntimeException();
-//        }
-//    }
-//
-//    @Override
-//    public String saveCommits() {
-//        try{
-//            // fetch Commit details
-//            List<CommitEntity> commitEntityList = githubService.fetchCommits();
-//            if(commitEntityList == null || commitEntityList.isEmpty()) {
-//                throw new NullPointerException("final Commit Entity list is null and saving failed");
-//            }
-//            for(CommitEntity commit: commitEntityList) {
-//                commitRepository.save(commit);
-//            }
-//            return "Commits Saved Successfully";
-//
-//        } catch(RuntimeException e){
-//            logger.error("commits saved failed ", e);
-//            throw new RuntimeException();
-//        }
-//    }
-//
-//    @Override
-//    public String saveIssues() {
-//        try{
-//            // fetch Open Issues details
-//            List<IssueEntity> openIssueEntityList = githubService.fetchOpenIssues();
-//            // fetch Closed Issues details
-//            List<IssueEntity> closeIssueEntityList = githubService.fetchCloseIssues();
-//
-//            List<IssueEntity> allIssues = new ArrayList<>();
-//            allIssues.addAll(openIssueEntityList);
-//            allIssues.addAll(closeIssueEntityList);
-//
-//            if(allIssues.isEmpty()) {
-//                throw new NullPointerException("final Issue Entity list is null and saving failed");
-//            }
-//            for(IssueEntity issue: allIssues) {
-//                issueRepository.save(issue);
-//            }
-//            return "Issues Saved Successfully";
-//
-//        } catch(RuntimeException e){
-//            logger.error("issue saving failed ", e);
-//            throw new RuntimeException();
-//        }
-//    }
 
 }

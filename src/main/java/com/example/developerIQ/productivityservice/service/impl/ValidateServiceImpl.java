@@ -22,6 +22,7 @@ public class ValidateServiceImpl implements ValidateService {
     @Override
     public Boolean validateToken(String token) {
         try {
+            System.out.println(token);
             Jwts.parserBuilder()
                     .setSigningKey(getSignKey())
                     .build()

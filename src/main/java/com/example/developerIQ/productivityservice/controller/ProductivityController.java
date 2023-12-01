@@ -40,7 +40,9 @@ public class ProductivityController {
         String token = authorizationHeader;
 
         if(token!= null && token.startsWith("Bearer ")){
+            System.out.println("inside here");
             token = token.substring(7);
+            System.out.println("token " +token);
         }
         if(validateService.validateToken(token)){
             return ResponseEntity.ok(productivityService.retrieveOverview(username, startDate, endDate));

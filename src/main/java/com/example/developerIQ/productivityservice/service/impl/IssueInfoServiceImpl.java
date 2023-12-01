@@ -35,9 +35,6 @@ public class IssueInfoServiceImpl implements IssueInfoService {
     @Autowired
     private IssueInfoHelper issueInfoHelper;
 
-//    @Autowired
-//    private CommitRepository commitRepository;
-//
     @Autowired
     private IssueRepository issueRepository;
 
@@ -89,39 +86,72 @@ public class IssueInfoServiceImpl implements IssueInfoService {
 
             // open issues
             List<IssueEntity> fetchedOpenIssues = issueRepository.findIssuesByNameState(user, "open");
-            // get all open issue count
-            if(fetchedOpenIssues == null || fetchedOpenIssues.isEmpty()) {
-                logger.error("Issues not found for this particular user {}",user);
-                throw new NullPointerException("Issues not found for this particular user");
-            }
-            int open_issue_count = fetchedOpenIssues.size();
-            Map<String, Integer> open_issues_map = issueInfoHelper.generateOpenIssueMap(fetchedOpenIssues, started, ended);
-
+            // close issues
             List<IssueEntity> fetchedClosedIssues = issueRepository.findIssuesByNameState(user, "closed");
-            // get all closed issue count
-            if(fetchedClosedIssues == null || fetchedClosedIssues.isEmpty()) {
-                logger.error("Issues not found for this particular user {}",user);
-                throw new NullPointerException("Issues not found for this particular user");
+
+            if(fetchedOpenIssues == null || fetchedOpenIssues.isEmpty()) {
+                System.out.println("open issue list empty");
+                if(fetchedClosedIssues == null || fetchedClosedIssues.isEmpty()) {
+                    System.out.println("both lists empty");
+                    return issueInfoHelper.generateStatics(0, 0, 0,
+                            0, 0, 0, null, null);
+
+                } else {
+                    System.out.println("closed issues not empty");
+                    int closed_issue_count = fetchedClosedIssues.size();
+                    Map<String, Integer> closed_issues_map = issueInfoHelper.generateClosedIssueMap(fetchedClosedIssues, ended, started);
+
+                    // get opened:closed ratio
+                    double ratio = calculateRatio(0, closed_issue_count);
+
+                    // opened percentage
+                    double open_percentage = calculatePercentage(0, closed_issue_count);
+                    // closed percentage
+                    double close_percentage = calculatePercentage(closed_issue_count, closed_issue_count);
+
+                    return issueInfoHelper.generateStatics(closed_issue_count, 0, closed_issue_count,
+                            open_percentage, close_percentage, ratio, closed_issues_map, null);
+                }
+            } else {
+                System.out.println("open issues not empty");
+
+                int open_issue_count = fetchedOpenIssues.size();
+                Map<String, Integer> open_issues_map = issueInfoHelper.generateOpenIssueMap(fetchedOpenIssues, started, ended);
+
+                if(fetchedClosedIssues == null || fetchedClosedIssues.isEmpty()) {
+                    System.out.println("closed empty open not empty");
+
+                    // get opened:closed ratio
+                    double ratio = calculateRatio(open_issue_count, 0);
+                    // opened percentage
+                    double open_percentage = calculatePercentage(open_issue_count, open_issue_count);
+                    // closed percentage
+                    double close_percentage = calculatePercentage(0, open_issue_count);
+
+                    return issueInfoHelper.generateStatics(open_issue_count, open_issue_count, 0,
+                            open_percentage, close_percentage, ratio, null, open_issues_map);
+
+                } else {
+                    System.out.println("both not empty");
+
+                    int closed_issue_count = fetchedOpenIssues.size();
+                    Map<String, Integer> closed_issues_map = issueInfoHelper.generateClosedIssueMap(fetchedClosedIssues, ended, started);
+
+                    int total_count = open_issue_count + closed_issue_count;
+                    // get opened:closed ratio
+                    double ratio = calculateRatio(open_issue_count, closed_issue_count);
+                    // opened percentage
+                    double open_percentage = calculatePercentage(open_issue_count, open_issue_count);
+                    // closed percentage
+                    double close_percentage = calculatePercentage(closed_issue_count, open_issue_count);
+
+                    return issueInfoHelper.generateStatics(total_count, open_issue_count, closed_issue_count,
+                            open_percentage, close_percentage, ratio, closed_issues_map, open_issues_map);
+                }
             }
-            int closed_issue_count = fetchedOpenIssues.size();
-            Map<String, Integer> closed_issues_map = issueInfoHelper.generateClosedIssueMap(fetchedClosedIssues, ended, started);
-
-            int total_issues = open_issue_count + closed_issue_count;
-
-            // get opened:closed ratio
-            double ratio = calculateRatio(open_issue_count, closed_issue_count);
-            String text = RATIO;
-
-            // opened percentage
-            double open_percentage = calculatePercentage(open_issue_count, total_issues);
-            // closed percentage
-            double close_percentage = calculatePercentage(closed_issue_count, total_issues);
-
-            return issueInfoHelper.generateStatics(total_issues, open_issue_count, closed_issue_count,
-                    open_percentage, close_percentage, ratio, closed_issues_map, open_issues_map);
 
         } catch(RuntimeException e){
-            logger.error("pull requests data fetch error failed ", e);
+            logger.error("issue data fetch error failed ", e);
             throw new RuntimeException();
         }
     }
