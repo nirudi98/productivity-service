@@ -56,7 +56,7 @@ public class ProductivityServiceImpl implements ProductivityService {
         OverallPR info = productivityInfoHelper.formatOverallPRResponse(prList, started, ended);
         productivityInformation.setPrList(info);
 
-        List<IssueEntity> issueList = issueRepository.findPullRequestByName(username);
+        List<IssueEntity> issueList = issueRepository.findIssuesByName(username);
 
         if(issueList == null || issueList.isEmpty()) {
             logger.error("Issue Overall info not found for this particular user {}",username);
@@ -66,7 +66,7 @@ public class ProductivityServiceImpl implements ProductivityService {
         OverallIssues issue_info = productivityInfoHelper.formatOverallIssueResponse(issueList, started, ended);
         productivityInformation.setIssuesList(issue_info);
 
-        List<CommitEntity> commitList = commitRepository.findPullRequestByName(username);
+        List<CommitEntity> commitList = commitRepository.findCommitByName(username);
 
         if(commitList == null || commitList.isEmpty()) {
             logger.error("Commit Overall info not found for this particular user {}",username);
@@ -90,15 +90,15 @@ public class ProductivityServiceImpl implements ProductivityService {
         int previous_pr_count = previousPR.size();
 
         // fetch all issues opened within last sprint
-        List<IssueEntity> previousOpenIssues = issueRepository.findPullRequestByDate(started, ended, "open");
+        List<IssueEntity> previousOpenIssues = issueRepository.findIssuesByDate(started, ended, "open");
         int previous_open_issue_count = previousOpenIssues.size();
 
         // fetch all issues closed within last sprint
-        List<IssueEntity> previousClosedIssues = issueRepository.findPullRequestByDate(started, ended, "closed");
+        List<IssueEntity> previousClosedIssues = issueRepository.findIssuesByDate(started, ended, "closed");
         int previous_closed_issue_count = previousClosedIssues.size();
 
         // fetch all PR opened within last sprint
-        List<CommitEntity> previousCommit = commitRepository.findPullRequestByDate(started, ended);
+        List<CommitEntity> previousCommit = commitRepository.findCommitByDate(started, ended);
         int previous_commit_count = previousCommit.size();
 
         PreviousProductivity previousProductivity = new PreviousProductivity();

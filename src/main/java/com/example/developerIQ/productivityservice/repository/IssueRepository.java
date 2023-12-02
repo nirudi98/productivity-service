@@ -21,10 +21,10 @@ public interface IssueRepository extends MongoRepository<IssueEntity, String> {
 
     @Query("{ 'username' : ?0 }")
 //    @Query("SELECT e FROM IssueEntity e WHERE e.username = :name")
-    List<IssueEntity> findPullRequestByName(String name);
+    List<IssueEntity> findIssuesByName(String name);
 
     @Query("{ 'created_date': {$gte: ?0, $lte: ?1}, 'state' : ?2 }")
 //    @Query("SELECT e FROM IssueEntity e WHERE (e.created_date BETWEEN :start AND :end) AND e.state = :state")
-    List<IssueEntity> findPullRequestByDate(LocalDateTime start, LocalDateTime end, String state);
+    List<IssueEntity> findIssuesByDate(LocalDateTime start, LocalDateTime end, String state);
 
 }

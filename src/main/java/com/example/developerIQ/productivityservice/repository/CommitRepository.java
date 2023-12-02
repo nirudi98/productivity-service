@@ -19,10 +19,10 @@ public interface CommitRepository extends MongoRepository<CommitEntity, String> 
 
     @Query("{ 'committer_name' : ?0 }")
 //    @Query("SELECT e FROM CommitEntity e WHERE e.committer_name = :name")
-    List<CommitEntity> findPullRequestByName(String name);
+    List<CommitEntity> findCommitByName(String name);
 
     @Query("{ 'committed_date': {$gte: ?0, $lte: ?1} }")
 //    @Query("SELECT e FROM CommitEntity e WHERE (e.committed_date BETWEEN :start AND :end)")
-    List<CommitEntity> findPullRequestByDate(LocalDateTime start, LocalDateTime end);
+    List<CommitEntity> findCommitByDate(LocalDateTime start, LocalDateTime end);
 
 }
