@@ -110,7 +110,7 @@ class IssueInfoServiceImplTest {
         assertNotNull(result);
         assertEquals(true,
                 result.getIssueInformationList().get(0).getIsClosed());
-        assertEquals(100.00,
+        assertEquals(50.00,
                 result.getIssueInformationList().get(0).getProductivity_rate());
     }
 

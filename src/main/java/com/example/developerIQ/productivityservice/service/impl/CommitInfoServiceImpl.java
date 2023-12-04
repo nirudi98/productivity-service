@@ -57,21 +57,19 @@ public class CommitInfoServiceImpl implements CommitInfoService {
             int total_commits_within_sprint_null = 0; int total_overall_null = 0;
 
             if(fetchedCommitsSprint == null || fetchedCommitsSprint.isEmpty()) {
-                System.out.println("in of sprint is empty ");
+
                 if(fetchedCommitsOutSprint == null || fetchedCommitsOutSprint.isEmpty()) {
-                    System.out.println("out of sprint is empty ");
-                    System.out.println("both empty ");
                     Commits commits = new Commits();
                     commits.setCommitInformtionList(null);
                     commits.setTotal_commits_within_sprint(total_commits_within_sprint_null);
                     commits.setTotal_commits_overall(total_overall_null);
-                    System.out.println("commit " + commits.getTotal_commits_overall() + " " + commits.getTotal_commits_within_sprint() + " " +
-                            commits.getCommitInformtionList());
+
                     return commits;
                 } else {
-                    System.out.println("out of sprint is not empty but in sprint empty ");
+
                     int overall_commits = fetchedCommitsOutSprint.size();
                     List<CommitInformation> commitInformations1 = new ArrayList<>();
+
                     for(CommitEntity commit: fetchedCommitsOutSprint) {
                         CommitInformation info = commitInfoHelper.formatCommitNotWithinSprintResponse(
                         commit, ended, started);
@@ -82,33 +80,27 @@ public class CommitInfoServiceImpl implements CommitInfoService {
                     commits.setCommitInformtionList(commitInformations1);
                     commits.setTotal_commits_within_sprint(total_commits_within_sprint_null);
                     commits.setTotal_commits_overall(overall_commits);
-                    System.out.println("commit " + commits.getTotal_commits_overall() + " " + commits.getTotal_commits_within_sprint() + " " +
-                            commits.getCommitInformtionList());
+
                     return commits;
                 }
             }
 
-            System.out.println("in sprint not empty ");
             for(CommitEntity commit: fetchedCommitsSprint) {
                 CommitInformation info = commitInfoHelper.formatCommitWithinSprintResponse(
                         commit, ended, started);
                 commitInformations.add(info);
             }
-            System.out.println("commit info list " + commitInformations.size());
 
             if(fetchedCommitsOutSprint == null || fetchedCommitsOutSprint.isEmpty()) {
-                System.out.println("out of sprint is empty but in is not empty");
                 int overall_commits = fetchedCommitsSprint.size();
 
                 Commits commits = new Commits();
                 commits.setCommitInformtionList(commitInformations);
                 commits.setTotal_commits_within_sprint(fetchedCommitsSprint.size());
                 commits.setTotal_commits_overall(overall_commits);
-                System.out.println("commit " + commits.getTotal_commits_overall() + " " + commits.getTotal_commits_within_sprint() + " " +
-                        commits.getCommitInformtionList());
+
                 return commits;
             } else {
-                System.out.println("out of sprint not empty and in spring not empty both there ");
                 int overall_commits = fetchedCommitsSprint.size() + fetchedCommitsOutSprint.size();
 
                 List<CommitInformation> commitInformations2 = new ArrayList<>();
@@ -125,8 +117,7 @@ public class CommitInfoServiceImpl implements CommitInfoService {
                 commits.setCommitInformtionList(commitInformationsAll);
                 commits.setTotal_commits_within_sprint(fetchedCommitsSprint.size());
                 commits.setTotal_commits_overall(overall_commits);
-                System.out.println("commit " + commits.getTotal_commits_overall() + " " + commits.getTotal_commits_within_sprint() + " " +
-                        commits.getCommitInformtionList());
+
                 return commits;
             }
         } catch (RuntimeException e) {
@@ -139,9 +130,6 @@ public class CommitInfoServiceImpl implements CommitInfoService {
     private List<CommitEntity> fetchCommitsInSprintHelper(String username, LocalDateTime started, LocalDateTime ended) {
         try {
             List<CommitEntity> fetchedCommitsSprint = commitRepository.findBySprintDate(username, started, ended);
-            System.out.println("db params " + username + " " + started + " " +ended);
-
-            System.out.println("size of commits in spring " + fetchedCommitsSprint.size());
 
             if(fetchedCommitsSprint == null || fetchedCommitsSprint.isEmpty()) {
                 logger.error("Commit information not found for this particular user {}",username);
@@ -160,7 +148,6 @@ public class CommitInfoServiceImpl implements CommitInfoService {
     private List<CommitEntity> fetchCommitsOutSprintHelper(String username, LocalDateTime started, LocalDateTime ended) {
         try {
             List<CommitEntity> fetchedCommitsNotInSprint = commitRepository.findCommitsNotInSprintByDate(username, started, ended);
-            System.out.println("size of commits in spring out" + fetchedCommitsNotInSprint.size());
 
             if(fetchedCommitsNotInSprint == null || fetchedCommitsNotInSprint.isEmpty()) {
                 logger.error("Commit information not found for this particular user before or after sprint {}",username);

@@ -40,6 +40,11 @@ public class ProductivityServiceImpl implements ProductivityService {
 
     @Override
     public Productivity retrieveOverview(String username, String start, String end) {
+        try{
+
+        } catch(NullPointerException e) {
+            logger.error("unable to retrieve overview for this user {}",username);
+        }
         Productivity productivity = new Productivity();
         ProductivityInformation productivityInformation = new ProductivityInformation();
 
@@ -47,30 +52,26 @@ public class ProductivityServiceImpl implements ProductivityService {
         LocalDateTime ended = LocalDateTime.parse(end + " 00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
 
         List<PullRequestEntity> prList = pullRequestRepository.findPullRequestByName(username);
+        List<IssueEntity> issueList = issueRepository.findIssuesByName(username);
+        List<CommitEntity> commitList = commitRepository.findCommitByName(username);
 
         if(prList == null || prList.isEmpty()) {
             logger.error("PR Overall info not found for this particular user {}",username);
-            throw new NullPointerException("PR Overall info not found for this particular user");
         }
 
         OverallPR info = productivityInfoHelper.formatOverallPRResponse(prList, started, ended);
         productivityInformation.setPrList(info);
 
-        List<IssueEntity> issueList = issueRepository.findIssuesByName(username);
 
         if(issueList == null || issueList.isEmpty()) {
             logger.error("Issue Overall info not found for this particular user {}",username);
-            throw new NullPointerException("Issue Overall info not found for this particular user");
         }
 
         OverallIssues issue_info = productivityInfoHelper.formatOverallIssueResponse(issueList, started, ended);
         productivityInformation.setIssuesList(issue_info);
 
-        List<CommitEntity> commitList = commitRepository.findCommitByName(username);
-
         if(commitList == null || commitList.isEmpty()) {
             logger.error("Commit Overall info not found for this particular user {}",username);
-            throw new NullPointerException("Commit Overall info not found for this particular user");
         }
 
         OverallCommits commit_info = productivityInfoHelper.formatOverallCommitResponse(commitList, started, ended);
@@ -87,19 +88,22 @@ public class ProductivityServiceImpl implements ProductivityService {
 
         // fetch all PR opened within last sprint
         List<PullRequestEntity> previousPR = pullRequestRepository.findPullRequestByDate(started, ended);
-        int previous_pr_count = previousPR.size();
+        int previous_pr_count = (previousPR == null || previousPR.isEmpty()) ? 0 : previousPR.size();
 
         // fetch all issues opened within last sprint
         List<IssueEntity> previousOpenIssues = issueRepository.findIssuesByDate(started, ended, "open");
-        int previous_open_issue_count = previousOpenIssues.size();
+        int previous_open_issue_count = (previousOpenIssues == null || previousOpenIssues.isEmpty()) ?
+                0 : previousOpenIssues.size();
 
         // fetch all issues closed within last sprint
         List<IssueEntity> previousClosedIssues = issueRepository.findIssuesByDate(started, ended, "closed");
-        int previous_closed_issue_count = previousClosedIssues.size();
+        int previous_closed_issue_count = (previousClosedIssues == null || previousClosedIssues.isEmpty()) ?
+                0 : previousClosedIssues.size();
 
         // fetch all PR opened within last sprint
         List<CommitEntity> previousCommit = commitRepository.findCommitByDate(started, ended);
-        int previous_commit_count = previousCommit.size();
+        int previous_commit_count = (previousCommit == null || previousCommit.isEmpty()) ?
+                0 : previousCommit.size();
 
         PreviousProductivity previousProductivity = new PreviousProductivity();
         previousProductivity.setPrevious_pr_count(previous_pr_count);

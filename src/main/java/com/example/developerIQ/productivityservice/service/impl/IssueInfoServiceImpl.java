@@ -90,14 +90,12 @@ public class IssueInfoServiceImpl implements IssueInfoService {
             List<IssueEntity> fetchedClosedIssues = issueRepository.findIssuesByNameState(user, "closed");
 
             if(fetchedOpenIssues == null || fetchedOpenIssues.isEmpty()) {
-                System.out.println("open issue list empty");
+
                 if(fetchedClosedIssues == null || fetchedClosedIssues.isEmpty()) {
-                    System.out.println("both lists empty");
                     return issueInfoHelper.generateStatics(0, 0, 0,
                             0, 0, 0, null, null);
 
                 } else {
-                    System.out.println("closed issues not empty");
                     int closed_issue_count = fetchedClosedIssues.size();
                     Map<String, Integer> closed_issues_map = issueInfoHelper.generateClosedIssueMap(fetchedClosedIssues, ended, started);
 
@@ -113,13 +111,11 @@ public class IssueInfoServiceImpl implements IssueInfoService {
                             open_percentage, close_percentage, ratio, closed_issues_map, null);
                 }
             } else {
-                System.out.println("open issues not empty");
 
                 int open_issue_count = fetchedOpenIssues.size();
                 Map<String, Integer> open_issues_map = issueInfoHelper.generateOpenIssueMap(fetchedOpenIssues, started, ended);
 
                 if(fetchedClosedIssues == null || fetchedClosedIssues.isEmpty()) {
-                    System.out.println("closed empty open not empty");
 
                     // get opened:closed ratio
                     double ratio = calculateRatio(open_issue_count, 0);
@@ -132,7 +128,6 @@ public class IssueInfoServiceImpl implements IssueInfoService {
                             open_percentage, close_percentage, ratio, null, open_issues_map);
 
                 } else {
-                    System.out.println("both not empty");
 
                     int closed_issue_count = fetchedOpenIssues.size();
                     Map<String, Integer> closed_issues_map = issueInfoHelper.generateClosedIssueMap(fetchedClosedIssues, ended, started);

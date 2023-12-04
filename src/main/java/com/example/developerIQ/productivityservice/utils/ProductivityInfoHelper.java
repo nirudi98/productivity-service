@@ -23,6 +23,17 @@ public class ProductivityInfoHelper {
     private static final Logger logger = LoggerFactory.getLogger(ProductivityInfoHelper.class);
 
     public OverallPR formatOverallPRResponse(List<PullRequestEntity> entityList, LocalDateTime start, LocalDateTime end) {
+        if(entityList == null || entityList.isEmpty()) {
+            OverallPR overallPRNull = new OverallPR();
+            overallPRNull.setTotal_closed_PR(0);
+            overallPRNull.setTotal_opened_PR(0);
+            overallPRNull.setTotal_opened_PR_within_sprint(0);
+            overallPRNull.setTotal_closed_PR_within_sprint(0);
+            overallPRNull.setTotal_opened_out_of_sprint(0);
+
+            return overallPRNull;
+        }
+
         OverallPR overallPR = new OverallPR();
         int total_opened_within_sprint = 0;
         int total_opened_out_of_sprint = 0;
@@ -57,6 +68,18 @@ public class ProductivityInfoHelper {
     }
 
     public OverallIssues formatOverallIssueResponse(List<IssueEntity> entityList, LocalDateTime start, LocalDateTime end) {
+        if(entityList == null || entityList.isEmpty()) {
+            OverallIssues overallIssuesNull = new OverallIssues();
+            overallIssuesNull.setTotal_issues_opened(0);
+            overallIssuesNull.setTotal_issues_closed(0);
+            overallIssuesNull.setTotal_issues_opened_within_sprint(0);
+            overallIssuesNull.setTotal_issues_closed_within_sprint(0);
+            overallIssuesNull.setTotal_issues_opened_out_sprint(0);
+
+            return overallIssuesNull;
+        }
+
+
         OverallIssues overallIssues = new OverallIssues();
 
         int total_issues_opened = 0;
@@ -92,6 +115,17 @@ public class ProductivityInfoHelper {
     }
 
     public OverallCommits formatOverallCommitResponse(List<CommitEntity> entityList, LocalDateTime start, LocalDateTime end) {
+        if(entityList == null || entityList.isEmpty()) {
+            OverallCommits overallCommitsNull = new OverallCommits();
+            overallCommitsNull.setTotal_commits_opened(0);
+            overallCommitsNull.setTotal_commits_opened_within_sprint(0);
+            overallCommitsNull.setTotal_commits_opened_out_sprint(0);
+            overallCommitsNull.setCommit_rate_within_sprint(0.0);
+
+            return overallCommitsNull;
+        }
+
+
         OverallCommits overallCommits = new OverallCommits();
         List<CommitEntity> within_sprint_commits = new ArrayList<>();
 
