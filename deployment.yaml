@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: productivity-service
+spec:
+  selector:
+    matchLabels:
+      app: productivity-service
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: productivity-service
+    spec:
+      containers:
+        - name: productivity-service
+          image: niruddya98/productivity-service:latest
+          imagePullPolicy: IfNotPresent
+          env:
+          - name: spring_profiles_active
+            value: qa
+          ports:
+            - containerPort: 9193
