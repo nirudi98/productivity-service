@@ -41,44 +41,47 @@ public class ProductivityServiceImpl implements ProductivityService {
     @Override
     public Productivity retrieveOverview(String username, String start, String end) {
         try{
+            Productivity productivity = new Productivity();
+            ProductivityInformation productivityInformation = new ProductivityInformation();
+
+            LocalDateTime started = LocalDateTime.parse(start + " 00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+            LocalDateTime ended = LocalDateTime.parse(end + " 00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
+
+            List<PullRequestEntity> prList = pullRequestRepository.findPullRequestByName(username);
+            List<IssueEntity> issueList = issueRepository.findIssuesByName(username);
+            List<CommitEntity> commitList = commitRepository.findCommitByName(username);
+
+            if(prList == null || prList.isEmpty()) {
+                logger.error("PR Overall info not found for this particular user {}",username);
+            }
+
+            OverallPR info = productivityInfoHelper.formatOverallPRResponse(prList, started, ended);
+            productivityInformation.setPrList(info);
+
+
+            if(issueList == null || issueList.isEmpty()) {
+                logger.error("Issue Overall info not found for this particular user {}",username);
+            }
+
+            OverallIssues issue_info = productivityInfoHelper.formatOverallIssueResponse(issueList, started, ended);
+            productivityInformation.setIssuesList(issue_info);
+
+            if(commitList == null || commitList.isEmpty()) {
+                logger.error("Commit Overall info not found for this particular user {}",username);
+            }
+
+            OverallCommits commit_info = productivityInfoHelper.formatOverallCommitResponse(commitList, started, ended);
+            productivityInformation.setCommitsList(commit_info);
+
+            productivity.setProductivity(productivityInformation);
+            logger.info("Retrieved overall info for this particular user {} is found",username);
+            return productivity;
 
         } catch(NullPointerException e) {
+            Productivity productivity = new Productivity();
             logger.error("unable to retrieve overview for this user {}",username);
+            return productivity;
         }
-        Productivity productivity = new Productivity();
-        ProductivityInformation productivityInformation = new ProductivityInformation();
-
-        LocalDateTime started = LocalDateTime.parse(start + " 00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-        LocalDateTime ended = LocalDateTime.parse(end + " 00:00:00.000000", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS"));
-
-        List<PullRequestEntity> prList = pullRequestRepository.findPullRequestByName(username);
-        List<IssueEntity> issueList = issueRepository.findIssuesByName(username);
-        List<CommitEntity> commitList = commitRepository.findCommitByName(username);
-
-        if(prList == null || prList.isEmpty()) {
-            logger.error("PR Overall info not found for this particular user {}",username);
-        }
-
-        OverallPR info = productivityInfoHelper.formatOverallPRResponse(prList, started, ended);
-        productivityInformation.setPrList(info);
-
-
-        if(issueList == null || issueList.isEmpty()) {
-            logger.error("Issue Overall info not found for this particular user {}",username);
-        }
-
-        OverallIssues issue_info = productivityInfoHelper.formatOverallIssueResponse(issueList, started, ended);
-        productivityInformation.setIssuesList(issue_info);
-
-        if(commitList == null || commitList.isEmpty()) {
-            logger.error("Commit Overall info not found for this particular user {}",username);
-        }
-
-        OverallCommits commit_info = productivityInfoHelper.formatOverallCommitResponse(commitList, started, ended);
-        productivityInformation.setCommitsList(commit_info);
-
-        productivity.setProductivity(productivityInformation);
-        return productivity;
     }
 
     @Override
