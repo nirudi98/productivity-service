@@ -13,6 +13,7 @@ import com.example.developerIQ.productivityservice.service.IssueInfoService;
 import com.example.developerIQ.productivityservice.service.ProductivityService;
 import com.example.developerIQ.productivityservice.service.PullRequestInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,11 @@ public class PreviousProductivityController {
     @GetMapping(value = "/display/overview")
     public ResponseEntity<PreviousProductivity> retrievePreviousProductivityOverview(@RequestParam String start, @RequestParam String end){
         return ResponseEntity.ok(productivityService.previousProductivity(start, end));
+    }
+
+    @GetMapping("/health-check")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("Health Check OK");
     }
 
 }

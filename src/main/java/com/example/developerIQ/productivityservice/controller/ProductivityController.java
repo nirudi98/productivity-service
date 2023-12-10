@@ -133,4 +133,9 @@ public class ProductivityController {
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
+
+    @GetMapping("/health-check")
+    public ResponseEntity<String> healthCheck() {
+        return ResponseEntity.status(HttpStatus.OK).body("Health Check OK");
+    }
 }
