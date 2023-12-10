@@ -13,4 +13,4 @@ spec:
       port: 9193
       targetPort: 9193
       nodePort: 30448
-  type: LoadBalancer
+  type: NodePort
